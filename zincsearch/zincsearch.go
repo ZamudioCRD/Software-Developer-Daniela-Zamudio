@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"final-project/models"
@@ -25,6 +26,8 @@ func PostZs(records []models.Email) {
 		fmt.Println("Error al convertir a JSON:", err)
 		return
 	}
+
+	log.Printf("JSON Data:\n%s\n", jsonData)
 
 	// Crear una solicitud POST
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonData))

@@ -1,4 +1,5 @@
 <template>
+
   <div id="app">
     <!-- formulario de busqueda -->
     <input v-model="searchTerm" placeholder="Ingrese el término de búsqueda" />
@@ -6,16 +7,23 @@
 
     <!-- Tabla -->
     <!-- <table class="email-table" v-if="emails.length"> -->
-      <table>
+      <table class="table-fixed">
   <thead>
     <tr>
       <th>Email</th>
+      <th v-for="(value, key) in sources[0]" :key="key">{{ key }}</th>
     </tr>
   </thead>
   <tbody>
     <!-- Recorre emails para mostrar tablas -->
     <template v-for="(source, index) in sources" :key="index">
       <tr v-if="source.content">
+        <td v-for="(value, key) in source" :key="key">{{ value }}</td>
+        <td>{{ source.message_id }}</td>
+        <td>{{ source.date }}</td>
+        <td>{{ source.from }}</td>
+        <td>{{ source.to }}</td>
+        <td>{{ source.subject }}</td>
         <td>{{ source.content }}</td>
       </tr>
     </template>
@@ -33,7 +41,14 @@ export default {
     return {
       searchTerm: '',
       // Asignar el tipo a emails para que no lo tome como un valor nil
-      sources: [] as { content: string }[],
+      sources: [] as {
+        message_id: string;
+        date: string;
+        from: string;
+        to: string;
+        subject: string;
+        content: string;
+      }[],
     };
   },
   methods: {

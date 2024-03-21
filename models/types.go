@@ -1,12 +1,12 @@
 package models
 
 type Email struct {
-	// Subject   string `json:"subject"`
-	// From      string `json:"from"`
-	// To        string `json:"to"`
-	Content string `json:"content"`
-	// MessageID string `json:"message_id"`
-	// Date      string `json:"date"`
+	Subject   string `json:"subject"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Content   string `json:"content"`
+	MessageID string `json:"message_id"`
+	Date      string `json:"date"`
 }
 
 type CreateIndexer struct {

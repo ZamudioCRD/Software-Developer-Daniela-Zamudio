@@ -6,6 +6,7 @@ import (
 	"final-project/zincsearch"
 	"log"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -23,7 +24,15 @@ func ReadFileWithBufio(filePath string, wg *sync.WaitGroup, emails *[]models.Ema
 
 	reader := bufio.NewReader(file)
 
-	var emailContent string
+	var (
+		email        models.Email
+		emailContent string
+		subjectFound bool
+		fromFound    bool
+		toFound      bool
+		messageFound bool
+		dateFound    bool
+	)
 
 	for {
 		line, err := reader.ReadString('\n')
@@ -37,14 +46,36 @@ func ReadFileWithBufio(filePath string, wg *sync.WaitGroup, emails *[]models.Ema
 			}
 		}
 
-		emailContent += line
+		switch {
 
+		case strings.HasPrefix(line, "Message-ID:") && !messageFound:
+			email.MessageID = strings.TrimSpace(line[12:])
+			messageFound = true
+
+		case strings.HasPrefix(line, "Date:") && !dateFound:
+			email.Date = strings.TrimSpace(line[5:])
+			dateFound = true
+
+		case strings.HasPrefix(line, "From:") && !fromFound:
+			email.From = strings.TrimSpace(line[5:])
+			fromFound = true
+
+		case strings.HasPrefix(line, "To:") && !toFound:
+			email.To = strings.TrimSpace(line[3:])
+			toFound = true
+
+		case strings.HasPrefix(line, "Subject:") && !subjectFound:
+			email.Subject = strings.TrimSpace(line[8:])
+			subjectFound = true
+
+		default:
+			emailContent += line
+		}
 	}
 
-	email := models.Email{
-		Content: emailContent,
-	}
+	//log.Printf("Email Content:\n%s\n", emailContent)
 
+	email.Content = emailContent
 	*emails = append(*emails, email)
 
 	m.Lock()
